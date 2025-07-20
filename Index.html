@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Inspection App</title>
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRmxlZXQgSW5zcGVjdGlvbiBBcHAiLCJzaG9ydF9uYW1lIjoiRmxlZXQgSW5zcGVjdG9yIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwidGhlbWVfY29sb3IiOiIjMmMzZTUwIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmNWY1ZjUiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRJNElpQm9aV2xuYUhROUlqRXlPQ0lnZG1sbGQwSnZlRDBpTUNBd0lERXlPQ0F4TWpnaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJK1BIQmhkR2dnWkQwaWJUWTBJREEwYURVMklqWTBJREEwYURVMklqWTBJREV5TkNCb0xUVTJJalo0UWk0eUxUVXVPQ0F4TGpjZ01TMDJMalkySWlCbWFXeHNQU0lqTWprek5EVTFJaThpUEM5emRtYysifSx7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1qVTJJaUJvWldsbmFIUTlJako5VmpZMElpQjJhV1YzUW05NFBTSXdJREFnTWpVMklESTFOaUlnZUcxc2JuTTlJbWgwZEhBNkx5OTNkM2N1ZHpNdWIzSm5Mekl3TURBdmMzWm5JajQ4Y0dGMGFDQmtQU0p0TVRJNElERXdJRGd3SURFeE1pQm9MVFUySURFeU9DQklOemdnU1dRNUxqWWdPVGN1TmlBM05pQTRPQ0JJTVRJNElsOWlkVzVrYkdWcVUzbHRZbTlzUFNKb2IyeHNiM2NpSUdacGJHdzlJaU16T1RkRE56UWlJQzgrUEM5emRtYysifV19">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f5f5f5;
+        padding: 10px;
+        line-height: 1.4;
+    }
+    
+    .form-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    
+    .header {
+        background: #2c3e50;
+        color: white;
+        padding: 15px;
+        text-align: center;
+    }
+    
+    .header h1 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .header-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .header-field {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .header-field label {
+        font-size: 12px;
+        margin-bottom: 5px;
+        opacity: 0.9;
+    }
+    
+    .header-field input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .action-bar {
+        background: #34495e;
+        padding: 10px 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .action-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .action-btn:hover {
+        background: #2980b9;
+    }
+    
+    .action-btn.success {
+        background: #27ae60;
+    }
+    
+    .action-btn.success:hover {
+        background: #2ecc71;
+    }
+    
+    .action-btn.danger {
+        background: #e74c3c;
+    }
+    
+    .action-btn.danger:hover {
+        background: #c0392b;
+    }
+    
+    .section {
+        border-bottom: 2px solid #ecf0f1;
+        padding: 15px;
+    }
+    
+    .section-title {
+        background: #34495e;
+        color: white;
+        padding: 10px;
+        margin: -15px -15px 15px -15px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .subsection {
+        margin-bottom: 20px;
+    }
+    
+    .subsection-title {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 14px;
+        border-bottom: 1px solid #bdc3c7;
+        padding-bottom: 5px;
+    }
+    
+    .item-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .item label {
+        font-size: 14px;
+        color: #495057;
+        flex: 1;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #3498db;
+    }
+    
+    .checkbox-item span {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .fluid-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .fluid-options {
+        display: flex;
+        gap: 10px;
+        font-size: 12px;
+    }
+    
+    .text-input {
+        padding: 6px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 12px;
+        width: 100px;
+    }
+    
+    .photo-section {
+        background: #ecf0f1;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+    }
+    
+    .photo-section h3 {
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .photo-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .photo-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .photo-btn:hover {
+        background: #2980b9;
+    }
+    
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .photo-item {
+        position: relative;
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
+    
+    .photo-item img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+    
+    .photo-item .photo-caption {
+        padding: 8px;
+        font-size: 12px;
+        background: white;
+    }
+    
+    .photo-item .remove-photo {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .signature-section {
+        background: #ecf0f1;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .signature-field {
+        margin-top: 15px;
+    }
+    
+    .signature-field input {
+        padding: 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 200px;
+        max-width: 100%;
+    }
+    
+    .email-section {
+        background: #f8f9fa;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .email-section h3 {
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .email-form {
+        display: grid;
+        gap: 10px;
+    }
+    
+    .email-form input, .email-form textarea {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .email-form textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+    
+    .save-btn {
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .save-btn:hover {
+        background: #2ecc71;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close:hover {
+        color: black;
+    }
+    
+    .hidden {
+        display: none !important;
+    }
+    
+    .status-message {
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        text-align: center;
+    }
+    
+    .status-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .status-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    @media (max-width: 600px) {
+        .header-fields {
+            grid-template-columns: 1fr;
+        }
+        
+        .checkbox-group {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .fluid-item {
+            grid-template-columns: 1fr;
+        }
+        
+        .fluid-options {
+            justify-content: center;
+        }
+        
+        .action-bar {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            min-width: auto;
+        }
+        
+        .photo-controls {
+            flex-direction: column;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="form-container">
+        <div class="header">
+            <h1>FLEET INSPECTION APP</h1>
+            <div class="header-fields">
+                <div class="header-field">
+                    <label>MILEAGE:</label>
+                    <input type="number" id="mileage" name="mileage">
+                </div>
+                <div class="header-field">
+                    <label>DATE:</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <div class="header-field">
+                    <label>UNIT #:</label>
+                    <input type="text" id="unit" name="unit">
+                </div>
+            </div>
+        </div>
+
+```
+    <div class="action-bar">
+        <button class="action-btn" onclick="takePhoto()">📷 Add Photo</button>
+        <button class="action-btn success" onclick="generatePDF()">📄 Generate PDF</button>
+        <button class="action-btn" onclick="openEmailModal()">📧 Email Report</button>
+        <button class="action-btn" onclick="clearForm()">🗑️ Clear Form</button>
+        <button class="action-btn danger" onclick="installApp()">📱 Install App</button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">FRONT OF VEHICLE</div>
+        
+        <div class="subsection">
+            <div class="subsection-title">LIGHTS:</div>
+            <div class="item-group">
+                <div class="item">
+                    <label>HEADLIGHTS:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="headlights_low" name="headlights_low">
+                            <span>Low</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="headlights_hi" name="headlights_hi">
+                            <span>Hi</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>OTHER:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="parking" name="parking">
+                            <span>Parking</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="left_turn" name="left_turn">
+                            <span>Left Turn</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="right_turn" name="right_turn">
+                            <span>Right Turn</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>OVERHEADS:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="spot_light" name="spot_light">
+                            <span>Spot Light</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="strobes" name="strobes">
+                            <span>Strobes</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="flash" name="flash">
+                            <span>Flash</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="alley" name="alley">
+                            <span>Alley</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">ENGINE AREA:</div>
+            <div class="item-group">
+                <div class="item">
+                    <label>HOSES:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="take_down" name="take_down">
+                            <span>Take Down</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="radiator" name="radiator">
+                            <span>Radiator</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="heater" name="heater">
+                            <span>Heater</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>BELT(S):</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="belt" value="needs_changing_yes"> Need Changing - Yes</label>
+                        <label><input type="radio" name="belt" value="needs_changing_no"> No</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>FLUID LEVELS:</label>
+                    <div style="display: grid; gap: 8px; font-size: 12px;">
+                        <div class="fluid-item">
+                            <label>Oil:</label>
+                            <div class="fluid-options">
+                                <label><input type="radio" name="oil" value="needs_changing_yes"> Needs Changing - Yes</label>
+                                <label><input type="radio" name="oil" value="needs_changing_no"> No</label>
+                                <input type="text" class="text-input" name="oil_mileage" placeholder="Mileage Due">
+                            </div>
+                        </div>
+                        <div class="fluid-item">
+                            <label>Transmission:</label>
+                            <div class="fluid-options">
+                                <label><input type="radio" name="transmission" value="clean"> Clean</label>
+                                <label><input type="radio" name="transmission" value="dirty"> Dirty</label>
+                                <label><input type="radio" name="transmission" value="oil"> Oil</label>
+                                <label><input type="radio" name="transmission" value="water"> Water in Fluid</label>
+                            </div>
+                        </div>
+                        <div class="fluid-item">
+                            <label>Power Steering:</label>
+                            <div class="fluid-options">
+                                <label><input type="radio" name="power_steering" value="needs_filling_yes"> Needs Filling - Yes</label>
+                                <label><input type="radio" name="power_steering" value="needs_filling_no"> No</label>
+                            </div>
+                        </div>
+                        <div class="fluid-item">
+                            <label>Brake:</label>
+                            <div class="fluid-options">
+                                <label><input type="radio" name="brake" value="needs_filling_yes"> Needs Filling - Yes</label>
+                                <label><input type="radio" name="brake" value="needs_filling_no"> No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">REAR OF VEHICLE</div>
+        
+        <div class="subsection">
+            <div class="subsection-title">LIGHTS:</div>
+            <div class="item-group">
+                <div class="item">
+                    <label>TAILLIGHTS:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="taillights_left" name="taillights_left">
+                            <span>Left</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="taillights_right" name="taillights_right">
+                            <span>Right</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="taillights_left_turn" name="taillights_left_turn">
+                            <span>Left Turn</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="taillights_right_turn" name="taillights_right_turn">
+                            <span>Right Turn</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="back_up" name="back_up">
+                            <span>Back Up</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>OVERHEADS:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rear_strobes" name="rear_strobes">
+                            <span>Strobes</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rear_flash" name="rear_flash">
+                            <span>Flash</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">TRUNK:</div>
+            <div class="item-group">
+                <div class="item fluid-item">
+                    <label>Clean:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="trunk_clean" value="yes"> Yes</label>
+                        <label><input type="radio" name="trunk_clean" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>Spare Tire:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="spare_tire" value="mounted_yes"> Mounted - Yes</label>
+                        <label><input type="radio" name="spare_tire" value="mounted_no"> No</label>
+                        <label><input type="radio" name="spare_tire" value="flat"> Flat</label>
+                        <label><input type="radio" name="spare_tire" value="inflated"> Inflated</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>Lug Wrench:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lug_wrench_yes" name="lug_wrench">
+                            <span>Yes</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lug_wrench_no" name="lug_wrench">
+                            <span>No</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>Fire Extinguisher:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="fire_extinguisher" value="mounted_yes"> Mounted - Yes</label>
+                        <label><input type="radio" name="fire_extinguisher" value="mounted_no"> No</label>
+                        <label><input type="radio" name="fire_extinguisher" value="charged_yes"> Charged - Yes</label>
+                        <label><input type="radio" name="fire_extinguisher" value="charged_no"> No</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>Jack #:</label>
+                    <input type="text" class="text-input" name="jack_number">
+                    <label style="margin-left: 10px;">Case #:</label>
+                    <input type="text" class="text-input" name="case_number">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">EXTERIOR OF VEHICLE</div>
+        
+        <div class="subsection">
+            <div class="subsection-title">CONDITION:</div>
+            <div class="item-group">
+                <div class="item fluid-item">
+                    <label>CLEAN:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="exterior_clean" value="yes"> Yes</label>
+                        <label><input type="radio" name="exterior_clean" value="no"> No</label>
+                        <input type="text" class="text-input" name="vehicle_registration" placeholder="Vehicle Registration">
+                        <input type="text" class="text-input" name="registration_month" placeholder="Month/Yr">
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>PAINT:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="paint" value="good"> Good</label>
+                        <label><input type="radio" name="paint" value="poor"> Poor</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>TIRES:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="front_right" name="front_right">
+                            <span>Front Right</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="front_left" name="front_left">
+                            <span>Front Left</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="back_right" name="back_right">
+                            <span>Back Right</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="back_left" name="back_left">
+                            <span>Back Left</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INTERIOR OF VEHICLE</div>
+        
+        <div class="subsection">
+            <div class="subsection-title">ELECTRICAL & OTHER:</div>
+            <div class="item-group">
+                <div class="item">
+                    <label>LIGHTS:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dome" name="dome">
+                            <span>Dome</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dash" name="dash">
+                            <span>Dash</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>EQUIPMENT:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="radio" name="radio">
+                            <span>Radio</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="siren" name="siren">
+                            <span>Siren</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cage" name="cage">
+                            <span>Cage</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="seat_belts" name="seat_belts">
+                            <span>Seat Belts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>MDT Condition:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="mdt_condition" value="functional"> Functional</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>UTILITY DVR:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tablet" name="tablet">
+                            <span>Tablet</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="charged" name="charged">
+                            <span>Charged</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="charged_yes" name="charged_status">
+                            <span>Yes</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="charged_no" name="charged_status">
+                            <span>No</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>TICKET WRITER:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="device" name="device">
+                            <span>Device</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="printer" name="printer">
+                            <span>Printer</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cord_yes" name="cord">
+                            <span>Cord Yes</span>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cord_no" name="cord">
+                            <span>No</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">CLEANLINESS:</div>
+            <div class="item-group">
+                <div class="item fluid-item">
+                    <label>Front Seat:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="front_seat" value="yes"> Yes</label>
+                        <label><input type="radio" name="front_seat" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>Front Floor:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="front_floor" value="yes"> Yes</label>
+                        <label><input type="radio" name="front_floor" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>Rear Seat:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="rear_seat" value="yes"> Yes</label>
+                        <label><input type="radio" name="rear_seat" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="item fluid-item">
+                    <label>Rear Floor:</label>
+                    <div class="fluid-options">
+                        <label><input type="radio" name="rear_floor" value="yes"> Yes</label>
+                        <label><input type="radio" name="rear_floor" value="no"> No</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="photo-section">
+        <h3>📷 INSPECTION PHOTOS</h3>
+        <div class="photo-controls">
+            <button class="photo-btn" onclick="takePhoto()">📱 Take Photo</button>
+            <button class="photo-btn" onclick="document.getElementById('fileInput').click()">📁 Upload Photo</button>
+            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFileUpload(event)">
+        </div>
+        <div class="photo-grid" id="photoGrid">
+            <!-- Photos will be displayed here -->
+        </div>
+    </div>
+
+    <div class="signature-section">
+        <strong>INSPECTOR</strong>
+        <div class="signature-field">
+            <input type="text" id="inspector" name="inspector" placeholder="Inspector Name/Signature">
+        </div>
+        <button class="save-btn" onclick="saveForm()">💾 Save Inspection</button>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div id="emailModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEmailModal()">&times;</span>
+        <h3>📧 Email Inspection Report</h3>
+        <div class="email-form">
+            <input type="email" id="emailTo" placeholder="Recipient Email" required>
+            <input type="text" id="emailSubject" placeholder="Subject" value="Fleet Inspection Report">
+            <textarea id="emailMessage" placeholder="Additional message (optional)"></textarea>
+            <button class="action-btn success" onclick="sendEmail()">Send Email</button>
+        </div>
+        <div id="emailStatus"></div>
+    </div>
+</div>
+
+<script>
+    // Global variables
+    let photos = [];
+    let formData = {};
+
+    // Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdmbGVldC1pbnNwZWN0aW9uLXYxJztzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7ZXZlbnQud2FpdFVudGlsKGNhY2hlcy5vcGVuKENBQ0hFX05BTUUpLnRoZW4oY2FjaGUgPT4gY2FjaGUuYWRkQWxsKFsnLyddKSkpO30pO3NlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7ZXZlbnQucmVzcG9uZFdpdGgoY2FjaGVzLm1hdGNoKGV2ZW50LnJlcXVlc3QpLnRoZW4ocmVzcG9uc2UgPT4gcmVzcG9uc2UgfHwgZmV0Y2goZXZlbnQucmVxdWVzdCkpKTt9KTs=');
+        });
+    }
+
+    // Auto-save form data to device storage
+    function saveFormData() {
+        const formData = {};
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                formData[input.name] = formData[input.name] || {};
+                formData[input.name][input.value || input.id] = input.checked;
+            } else {
+                formData[input.name] = input.value;
+            }
+        });
+        formData.photos = photos;
+        localStorage.setItem('fleetInspectionData', JSON.stringify(formData));
+    }
+
+    // Load saved form data
+    function loadFormData() {
+        const savedData = localStorage.getItem('fleetInspectionData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            Object.keys(data).forEach(name => {
+                if (name === 'photos') {
+                    photos = data.photos || [];
+                    displayPhotos();
+                } else if (typeof data[name] === 'object' && data[name] !== null) {
+                    Object.keys(data[name]).forEach(value => {
+                        const input = document.querySelector(`input[name="${name}"][value="${value}"], input[name="${name}"]#${value}`);
+                        if (input && data[name][value]) {
+                            input.checked = true;
+                        }
+                    });
+                } else {
+                    const input = document.querySelector(`input[name="${name}"]`);
+                    if (input) {
+                        input.value = data[name];
+                    }
+                }
+            });
+        }
+    }
+
+    // Photo functions
+    function takePhoto() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+                    
+                    const modal = document.createElement('div');
+                    modal.className = 'modal';
+                    modal.style.display = 'block';
+                    modal.innerHTML = `
+                        <div class="modal-content">
+                            <span class="close" onclick="closeCamera()">&times;</span>
+                            <h3>📷 Take Photo</h3>
+                            <div style="text-align: center;">
+                                <video id="cameraVideo" width="300" height="200" autoplay></video>
+                                <canvas id="cameraCanvas" width="300" height="200" style="display: none;"></canvas>
+                                <div style="margin-top: 15px;">
+                                    <button class="action-btn" onclick="capturePhoto()">📸 Capture</button>
+                                    <button class="action-btn danger" onclick="closeCamera()">❌ Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    document.getElementById('cameraVideo').srcObject = stream;
+                    window.currentStream = stream;
+                    window.currentModal = modal;
+                })
+                .catch(err => {
+                    alert('Camera access denied or not available');
+                    console.error('Camera error:', err);
+                });
+        } else {
+            document.getElementById('fileInput').click();
+        }
+    }
+
+    function capturePhoto() {
+        const video = document.getElementById('cameraVideo');
+        const canvas = document.getElementById('cameraCanvas');
+        const context = canvas.getContext('2d');
+        
+        context.drawImage(video, 0, 0, 300, 200);
+        const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+        
+        addPhotoToGallery(dataURL, `Photo ${photos.length + 1}`);
+        closeCamera();
+    }
+
+    function closeCamera() {
+        if (window.currentStream) {
+            window.currentStream.getTracks().forEach(track => track.stop());
+        }
+        if (window.currentModal) {
+            document.body.removeChild(window.currentModal);
+        }
+    }
+
+    function handleFileUpload(event) {
+        const files = event.target.files;
+        for (let file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                addPhotoToGallery(e.target.result, file.name);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function addPhotoToGallery(dataURL, caption) {
+        const photoObj = {
+            id: Date.now(),
+            data: dataURL,
+            caption: caption,
+            timestamp: new Date().toISOString()
+        };
+        photos.push(photoObj);
+        displayPhotos();
+        saveFormData();
+    }
+
+    function displayPhotos() {
+        const grid = document.getElementById('photoGrid');
+        grid.innerHTML = photos.map(photo => `
+            <div class="photo-item">
+                <img src="${photo.data}" alt="${photo.caption}">
+                <div class="photo-caption">${photo.caption}</div>
+                <button class="remove-photo" onclick="removePhoto(${photo.id})">×</button>
+            </div>
+        `).join('');
+    }
+
+    function removePhoto(photoId) {
+        photos = photos.filter(photo => photo.id !== photoId);
+        displayPhotos();
+        saveFormData();
+    }
+
+    // PDF Generation
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(16);
+        doc.text('FLEET INSPECTION REPORT', 20, 20);
+        
+        const mileage = document.getElementById('mileage').value;
+        const date = document.getElementById('date').value;
+        const unit = document.getElementById('unit').value;
+        const inspector = document.getElementById('inspector').value;
+        
+        doc.setFontSize(12);
+        doc.text(`Date: ${date}`, 20, 35);
+        doc.text(`Unit #: ${unit}`, 80, 35);
+        doc.text(`Mileage: ${mileage}`, 140, 35);
+        doc.text(`Inspector: ${inspector}`, 20, 45);
+        
+        let yPos = 60;
+        
+        // Collect form data
+        const sections = [
+            'FRONT OF VEHICLE - LIGHTS',
+            'ENGINE AREA',
+            'REAR OF VEHICLE',
+            'EXTERIOR CONDITION',
+            'INTERIOR OF VEHICLE'
+        ];
+        
+        sections.forEach(section => {
+            doc.setFontSize(14);
+            doc.text(section, 20, yPos);
+            yPos += 10;
+            
+            // Get relevant checkboxes and radio buttons for this section
+            const inputs = document.querySelectorAll('input:checked');
+            let sectionHasData = false;
+            
+            inputs.forEach(input => {
+                if (input.name && (input.checked || input.value)) {
+                    doc.setFontSize(10);
+                    const text = `${input.name}: ${input.value || 'checked'}`;
+                    doc.text(text, 25, yPos);
+                    yPos += 8;
+                    sectionHasData = true;
+                    
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                }
+            });
+            
+            if (sectionHasData) {
+                yPos += 5;
+            }
+        });
+        
+        // Add photos if any
+        if (photos.length > 0) {
+            doc.addPage();
+            doc.setFontSize(14);
+            doc.text('INSPECTION PHOTOS', 20, 20);
+            
+            let photoY = 30;
+            photos.forEach((photo, index) => {
+                if (photoY > 200) {
+                    doc.addPage();
+                    photoY = 20;
+                }
+                
+                try {
+                    doc.addImage(photo.data, 'JPEG', 20, photoY, 60, 45);
+                    doc.setFontSize(10);
+                    doc.text(photo.caption, 85, photoY + 20);
+                    photoY += 55;
+                } catch (e) {
+                    console.error('Error adding photo to PDF:', e);
+                }
+            });
+        }
+        
+        // Save PDF
+        const filename = `Fleet_Inspection_${unit || 'Unknown'}_${date || new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(filename);
+        
+        showStatus('PDF generated and downloaded successfully!', 'success');
+    }
+
+    // Email functionality
+    function openEmailModal() {
+        const modal = document.getElementById('emailModal');
+        modal.style.display = 'block';
+        
+        // Pre-fill subject
+        const unit = document.getElementById('unit').value;
+        const date = document.getElementById('date').value;
+        document.getElementById('emailSubject').value = `Fleet Inspection Report - Unit ${unit} - ${date}`;
+    }
+
+    function closeEmailModal() {
+        document.getElementById('emailModal').style.display = 'none';
+    }
+
+    function sendEmail() {
+        const to = document.getElementById('emailTo').value;
+        const subject = document.getElementById('emailSubject').value;
+        const message = document.getElementById('emailMessage').value;
+        
+        if (!to) {
+            showStatus('Please enter recipient email', 'error', 'emailStatus');
+            return;
+        }
+        
+        // Create email body with inspection data
+        const formData = getFormSummary();
+        const emailBody = `Fleet Inspection Report
+```
+
+Unit #: ${document.getElementById(‘unit’).value}
+Date: ${document.getElementById(‘date’).value}
+Mileage: ${document.getElementById(‘mileage’).value}
+Inspector: ${document.getElementById(‘inspector’).value}
+
+${message}
+
+— Inspection Details —
+${formData}
+
+Photos attached: ${photos.length}
+
+Generated by Fleet Inspection App`;
+
+```
+        // Try to open email client
+        const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+        
+        try {
+            window.location.href = mailtoLink;
+            showStatus('Email client opened. Please attach PDF if needed.', 'success', 'emailStatus');
+            setTimeout(() => closeEmailModal(), 2000);
+        } catch (e) {
+            showStatus('Error opening email client. Please copy the report manually.', 'error', 'emailStatus');
+        }
+    }
+
+    // Utility functions
+    function getFormSummary() {
+        const inputs = document.querySelectorAll('input:checked, input[type="text"]:not([value=""]), input[type="number"]:not([value=""]), input[type="date"]:not([value=""])');
+        let summary = '';
+        
+        inputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                summary += `${input.name}: ${input.value || 'checked'}\n`;
+            } else if (input.value) {
+                summary += `${input.name}: ${input.value}\n`;
+            }
+        });
+        
+        return summary;
+    }
+
+    function showStatus(message, type, containerId = 'statusContainer') {
+        let container = document.getElementById(containerId);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = containerId;
+            document.querySelector('.signature-section').prepend(container);
+        }
+        
+        container.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        setTimeout(() => {
+            container.innerHTML = '';
+        }, 5000);
+    }
+
+    function clearForm() {
+        if (confirm('Are you sure you want to clear all form data? This action cannot be undone.')) {
+            document.querySelectorAll('input').forEach(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            });
+            photos = [];
+            displayPhotos();
+            localStorage.removeItem('fleetInspectionData');
+            showStatus('Form cleared successfully!', 'success');
+            
+            // Reset date to today
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        }
+    }
+
+    function installApp() {
+        if (window.deferredPrompt) {
+            window.deferredPrompt.prompt();
+            window.deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    showStatus('App installed successfully!', 'success');
+                }
+                window.deferredPrompt = null;
+            });
+        } else {
+            showStatus('App is already installed or installation not available', 'error');
+        }
+    }
+
+    function saveForm() {
+        saveFormData();
+        const unit = document.getElementById('unit').value;
+        const date = document.getElementById('date').value;
+        const inspector = document.getElementById('inspector').value;
+        
+        showStatus(`Inspection saved successfully!\nDate: ${date || 'Not set'}\nUnit: ${unit || 'Not set'}\nInspector: ${inspector || 'Not set'}`, 'success');
+    }
+
+    // Event listeners
+    document.addEventListener('change', saveFormData);
+    document.addEventListener('input', saveFormData);
+
+    // PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+    });
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFormData();
+        
+        // Set today's date by default
+        const dateInput = document.getElementById('date');
+        if (!dateInput.value) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        
+        displayPhotos();
+    });
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const emailModal = document.getElementById('emailModal');
+        if (event.target === emailModal) {
+            emailModal.style.display = 'none';
+        }
+    };
+</script>
+```
+
+</body>
+</html>
